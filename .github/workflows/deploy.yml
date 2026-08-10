@@ -3,11 +3,12 @@ name: Deploy to AWS S3
 on:
   push:
     branches:
-      - main  # main branch-ல push பண்ணா trigger ஆகும்
+      - main  # உங்க branch 'master' ஆ இருந்தா 'master' நு மாத்துங்க
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -17,13 +18,8 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: us-east-2  # உங்க S3 Bucket இருக்குற Region (e.g., us-east-1 / us-east-2 / ap-south-1)
 
-      - name: Build Code (React/Angular இருந்தால்)
+      - name: Sync Files to S3
         run: |
-          npm install
-          npm run build
-
-      - name: Sync to S3
-        run: |
-          aws s3 sync ./build s3://aws-msk-01 --delete
+          aws s3 sync . s3://aws-msk-01 --delete
